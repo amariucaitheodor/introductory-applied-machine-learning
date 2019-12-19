@@ -68,7 +68,7 @@
 
 
 \answerbox{12em}{
-The training set has 5648 rows (documents) and 1000 columns (word TF-IDF frequencies), with the data ranging between 0 and 1. Classes have generally around 740 instances each, with class 7 being the exception (471 instances). Features are typically zero, which in turn shifts their mean (0.001708) and standard deviation (0.034360) to be very close to zero.
+The training set has 5648 rows (documents) and 1000 columns (word TF-IDF frequencies), with the data ranging between zero (min) and approx. 0.96 (max). Classes have generally around 740 instances each, with class 7 being the exception: 471 instances. Features are typically zero (zero-inflated model), which in turn shifts their mean (0.001708) and standard deviation (0.034360) to be very close to zero.
 }
 
 
@@ -80,7 +80,7 @@ The training set has 5648 rows (documents) and 1000 columns (word TF-IDF frequen
 
 
 \answerbox{10em}{
-The testing set has 1883 rows (documents), which is a third of the size of the training set. Features are also typically zero with a similar mean and standard deviation as the training set. This should translate to similar training and testing conditions, whereas in reality values might differ more drastically and therefore classification could suffer.
+The testing set has 1883 rows (documents), which is a third of the size of the training set. Features are also typically zero (zero-inflated model) with a similar mean and standard deviation as the training set, and their range is between zero (min) and approx. 0.86 (max).
 }
 
 
@@ -92,7 +92,7 @@ The testing set has 1883 rows (documents), which is a third of the size of the t
 
 
 \answerbox{10em}{
-The TF-IDF weights add to the importance of a word to a document (TF) by taking into consideration the word importance in the whole collection of documents (IDF). I think this is valuable because it is known that certain terms, such as "is", "of", and "that", may appear a lot of times but have little importance. They are also known as stop-words and are generally filtered. TF-IDF does something similar: it weighs them down by being inversely proportional to the number of times the word appears in the whole corpus.
+The TF-IDF weights add to the importance of a word to a document (TF) by taking into consideration the word importance in the whole collection of documents (IDF). I think this is useful here because it is known that certain terms, such as "is", "of", and "that", may appear a lot of times but have little importance. They are also known as stop-words and are generally filtered. TF-IDF does something similar: it weighs them down by being inversely proportional to the number of times the word appears in the whole corpus.
 }
 
 
@@ -143,7 +143,7 @@ A reasonable number of clusters for this problem is 8, as we have 8 different ne
 
 
 \answerbox{16em}{
-Mutual Information (MI) is a function that measures the agreement of two independent label assignments for a dataset (true vs predicted labels). Its expression is the harmonic mean of homogenity (all members of a given class are assigned to the same cluster) and completeness (each cluster contains only members of a single class): MI(X, Y) = H(X) + H(Y) - H(X,Y), where H is entropy of a label assignment. This is applicable here because we need to quantify the performance of the clustering: MI gives us an intuitive interpretation and bounded scores (0.0 is as bad as it can be, 1.0 is a perfect score). These metrics might be difficult to use in practice because they require the knowledge of the ground truth classes, which are almost never available or require manual assignment by human annotators.
+Mutual Information (MI) is a function that measures the agreement of two independent label assignments for a dataset (true vs predicted labels). Its expression is given by {MI}(U, V) = H(U) + H(V) - H(U, V) = $\sum_{i=1}^{|U|}\sum_{j=1}^{|V|}P(i, j)\log\left(\frac{P(i,j)}{P(i)P'(j)}\right)$, where H(U) and H(V) are entropies of label assignments i.e. $H(U) = - \sum_{i=1}^{|U|}P(i)\log(P(i))$. This is applicable here because we need to quantify the performance of the clustering: MI gives us an intuitive interpretation and bounded scores (0.0 is as bad as it can be, 1.0 is a perfect score). These metrics might be difficult to use in practice because they require the knowledge of the ground truth classes, which are almost never available or require manual assignment by human annotators.
 }
 
 
@@ -218,7 +218,7 @@ Clustering in Q 2(f) aligns fairly accurately with the true class labels, with t
 
 
 \answerbox{8em}{
-The F1-score is the harmonic mean of recall and precision: $\frac{2 \times precision \times recall}{precision \times recall}$, where recall is $\frac{TP}{TP+FP}$ and precision is $\frac{TP}{TP+FN}$. This is preferable to accuracy because of the imbalanced class distribution. In multi-class classification, the final score (using the macro-average setting) is the unweighted mean of the F1-scores for each class. 
+The F1-score is the harmonic mean of recall and precision: $\frac{2 \times precision \times recall}{precision \times recall}$, where recall is $\frac{TP}{TP+FP}$ and precision is $\frac{TP}{TP+FN}$. This is preferable to accuracy because we are interested in the FP and FN assignments: the F1-score penalizes extremes in those two categories. In multi-class classification, the final score (using the macro-average setting) is the unweighted mean of the F1-scores for each class.
 }
 
 
@@ -231,7 +231,7 @@ The F1-score is the harmonic mean of recall and precision: $\frac{2 \times preci
 
 
 \answerbox{8em}{
-The baseline classifier for this task will generate predictions by respecting the training set’s class distribution. This is the DummyClassifier with strategy set to 'stratified', and obtains an F1-score of 0.13 on the Test set. I chose this classifier because of its simplistic approach and linear ROC curve (false positives rates plotted against true posives rates).
+Whenever we investigate an ML model, we want to know whether it performs better than the competition, especially if there is a simpler or more tractable approach (known as the baseline). I have chosen a Gaussian Naive Bayes as my baseline model because it is simple and also extremely useful in general as a system in modelling human languages. It obtains an F1-score of 0.56 on the Test set.
 }
 
 
@@ -243,7 +243,9 @@ The baseline classifier for this task will generate predictions by respecting th
 
 
 \answerbox{9em}{
-Your Answer Here
+Logistic Regression can be applied to classify multi-class labels by calculating a different weight vector (model) $w_{k}$ for each class which classifies new instances into either class K or not class K. Having c such vectors, we can apply the Softmax function 
+\scalebox{1.3} {$\frac{exp({w_{k}\times x})}{\sum_{j=1}^{c} exp({w_{j}\times x})}$}
+which raises the logits to the power of e to bring negative numbers into the range (0,$\infty$) and then normalizes all the probabilities so they sum up to 1.
 }
 
 
@@ -255,7 +257,7 @@ Your Answer Here
 
 
 \answerbox{9em}{
-By training a Logistic Regressor on the training data, we obtain an average F1-score of 0.67 with a fairly small standard deviation: 0.017. This translates to a major improvement over the baseline classifier because of the consistently higher F1-scores obtained (as indicated by the small standard deviation).
+By training a Logistic Regressor on the training data, we obtain an average F1-score of 0.67 with a fairly small standard deviation: 0.017. This translates to an improvement over the baseline classifier (0.56) because of the consistently higher F1-scores obtained (as indicated by the small standard deviation).
 }
 
 
@@ -281,7 +283,7 @@ By training a Logistic Regressor on the training data, we obtain an average F1-s
 
 
 \answerbox{11em}{
-The optimal value of C can be found at the point where performance on the validation set is high, but performance on the training set is low enough not to indicate overfitting. This can be observed in the plot at Q 3(e) at around x=-0.5 (corresponding to a C value of 0.32 and an F1-score of 0.66). The plot displays the evolution of the performance of classification as the penalty for increasing the magnitude of parameter values decreases (smaller values of C specify stronger regularisation). We notice how as regularisation weakens, overfitting starts to take place.
+The optimal value of C can be found at the point where performance on the validation set is high, but performance on the training set is low enough not to indicate overfitting. This can be observed in the plot at Q 3(e) at around x=0 (corresponding to a C value of 1 and an F1-score of 0.67). The plot displays the evolution of the performance of classification as the penalty for increasing the magnitude of parameter values decreases (smaller values of C specify stronger regularisation). We notice how as regularisation weakens, overfitting starts to take place.
 }
 
 
@@ -293,7 +295,7 @@ The optimal value of C can be found at the point where performance on the valida
 
 
 \answerbox{7em}{
-After retraining the Logistic Regressor on the entire training set, the F1-score of the best model (C=10\textsuperscript{-0.5}) on the test-set is 0.66. 
+After retraining the Logistic Regressor on the entire training set, the F1-score of the best model (C=1) on the test-set is 0.67. This is similar to the performance of the classification when training was done on 90\% of the data, in the 10-Fold stratified split.
 }
 
 
@@ -346,29 +348,31 @@ as having missing data, and similarly for negative entries. \hint{Pandas has a h
 
 
 \answerbox{17em}{
-\scalebox{0.65} {
-	\begin{tabular}{rrr}
-		 SiteID &   \# Samples &  \% Problematic samples \\
-		 \midrule    0.0 &    6446.0 & 1.613404 \\
-		     1.0 &  163111.0 &  6.290195 \\
-		     2.0 &   62990.0 &  4.353072 \\
-		     3.0 &   25464.0 &  78.110273 \\
-		     4.0 &   74787.0 &  2.072553 \\
-		     5.0 &  113952.0 &  8.828279 \\
-		     6.0 &  142141.0 &  7.446831 \\
-		     7.0 &  115162.0 &  4.472830 \\
-		     8.0 &   43824.0 &  21.056955 \\
-		     9.0 &   22071.0 &  5.301074 \\
-		    10.0 &   96407.0 &  3.594137 \\
-		    11.0 &   20693.0 &  1.981346 \\
-		    12.0 &   45240.0 &  17.484527 \\
-		    13.0 &   12423.0 &  51.477099 \\
-		    14.0 &  113951.0 &  10.531720 \\
-		    15.0 &    2712.0 &  100.000000 \\
-		    16.0 &  154331.0 &  6.544375 \\
-		    17.0 &   91053.0 &  6.273269 \\
-	\end{tabular}
+\begin{center}
+\scalebox{0.67} {
+\begin{tabular}{rrrr}
+	SiteID &   Samples &  Missing Samples \% &  Negative Samples \% \\
+	\midrule 0 &    6446.0 &           1.61 &            0.0000 \\
+	1 &  163111 &           6.29 &            0.0000 \\
+	2 &   62990 &           4.35 &            0.0048 \\
+	3 &   25464 &          77.33 &            0.7776 \\
+	4 &   74787 &           2.07 &            0.0053 \\
+	5 &  113952 &           8.83 &            0.0000 \\
+	6 &  142141 &           7.44 &            0.0028 \\
+	7 &  115162 &           4.19 &            0.2779 \\
+	8 &   43824 &          21.06 &            0.0000 \\
+	9 &   22071 &           5.30 &            0.0000 \\
+	10 &   96407 &           3.59 &            0.0041 \\
+	11 &   20693 &           1.90 &            0.0870 \\
+	12 &   45240 &          17.48 &            0.0000 \\
+	13 &   12423 &          51.46 &            0.0161 \\
+	14 &  113951 &          10.53 &            0.0000 \\
+	15 &    2712 &         100.00 &            0.0000 \\
+	16 &  154331 &           6.53 &            0.0136 \\
+	17 &   91053 &           6.27 &            0.0022 \\
+\end{tabular}
 }
+\end{center}
 }
 
 
@@ -380,7 +384,7 @@ as having missing data, and similarly for negative entries. \hint{Pandas has a h
 
 
 \answerbox{11em}{
-Sites are unevenly distributed in terms of number of samples: the mean is of 72598 samples, but the standard deviation is very high (53066). This translates to a high variability in the number of samples among sites e.g. sites 0 and 15 have 6446 and 2712 samples, while sites 1 and 16 have 163111 and 154331 samples. In terms of problematic samples, each site has, on average, around 5\% problematic samples, but there are a few exceptions: most notably, site 8 has 21\%, site 13 has 51\%, site 3 has 78\% and site 15 has 100\% (every entry is corrupted).
+Sites are unevenly distributed in terms of number of samples: the mean is of 72598 samples, but the standard deviation is very high (53066). This translates to a high variability in the number of samples among sites e.g. sites 0 and 15 have 6446 and 2712 samples, while sites 1 and 16 have 163111 and 154331 samples. In terms of problematic samples, each site has, on average, around 5\% missing samples, with a few exceptions: most notably, site 8 has 21\%, site 13 has 51\%, site 3 has 77\% and site 15 has 100\% (every entry is corrupted). Additionally, 10 sites have a small percentage of negative samples (<1\%) and the rest of them have no such samples.
 }
 
 
@@ -392,14 +396,16 @@ Sites are unevenly distributed in terms of number of samples: the mean is of 725
 
 
 \answerbox{10em}{
-\scalebox{1.3} {
-\begin{tabular}{lrrr}
-	{} &       NOx &       NO2 &        NO \\
-	\midrule NOx &  1.000000 &  0.878016 &  0.988019 \\
-	NO2 &  0.878016 &  1.000000 &  0.807853 \\
-	NO  &  0.988019 &  0.807853 &  1.000000 \\
-\end{tabular}
+\begin{center}
+\scalebox{1.4} {
+	\begin{tabular}{lrrr}
+		{} &       NOx &       NO2 &        NO \\
+		\midrule NOx &  1.000000 &  0.878016 &  0.988019 \\
+		NO2 &  0.878016 &  1.000000 &  0.807853 \\
+		NO  &  0.988019 &  0.807853 &  1.000000 \\
+	\end{tabular}
 }
+\end{center}
 }
 
 
@@ -445,7 +451,7 @@ Sites are unevenly distributed in terms of number of samples: the mean is of 725
 
 
 \answerbox{12em}{
-The NO gas indicates correlations of over 0.5 overall, with two exceptions being between sites 14 and 7 (0.35), and between sites 7 and 6 (0.45) and 12 and 6 (0.47). The same exceptions are found in the NO2 and NOx site correlation heatmaps.
+The NO gas indicates correlations of over 0.5 overall, with three exceptions being between sites 14 and 7 (0.35), and between sites 7 and 6 (0.45) and 12 and 6 (0.47). The same exceptions are also observed in the NO2 and NOx heatmaps of correlations across sites.
 }
 
 
@@ -469,15 +475,7 @@ The NO gas indicates correlations of over 0.5 overall, with two exceptions being
 
 \answerbox{40em}{
 \begin{center}
-	\includegraphics[width=0.9\textwidth]{lines12}
-\end{center}
-\begin{center}
-	\includegraphics[width=0.9\textwidth]{lines34}
-\end{center}
-\begin{center}
-\scalebox{0.7} {
-	\includegraphics[width=0.9\textwidth]{line5}
-}
+	\includegraphics[width=0.9\textwidth]{readings}
 \end{center}
 }
 
@@ -492,7 +490,9 @@ The NO gas indicates correlations of over 0.5 overall, with two exceptions being
 
 
 \answerbox{40em}{
-Your Image Here
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{pca_exploratory}
+\end{center}
 }
 
 
@@ -504,7 +504,7 @@ Your Image Here
 
 
 \answerbox{9em}{
-Your Answer Here
+In the above plot we notice how the first 10 principal components collectively explain most (95\%) of the variance in the data, with the first one covering 58.9\%. The component-wise explained variance (red bar-chart) shows that the Principal Components have been sorted in decreasing order by their eigenvalues (as expected), and that the cumulative sum of variances (blue line-plot) is inversely proportional to the PCs because they are sequentially added to the sum, increasing it.
 }
 
 
@@ -517,7 +517,15 @@ Your Answer Here
 
 
 \answerbox{50em}{
-Your Image Here
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{mean}
+\end{center}
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{1pc}
+\end{center}
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{2pc}
+\end{center}
 }
 
 
@@ -529,7 +537,7 @@ Your Image Here
 
 
 \answerbox{16em}{
-Your Answer Here
+When analysing the 24-hour readings for the three pollutants (NOx, NO2, NO), we observe significant patterns emerging throughout the day which correspond to car usage during rush hours: values triple over a short period of time, starting from 6am and up until 10am, after which they slightly decrease but remain stable until around 5pm, when they start to rapidly decrease. The peak for the mean signifies the average hour when the measurement of $\frac{\mu g}{m^{3}}$ peaks, while the peak for the first principal component represents the hour when the measurements record the highest variability on different days i.e. pollutant levels vary significantly at that time on different days. In the second principal component, the NO2 measurements differ significantly from those of NOx and NO. This is linked to a limitation of the PCA technique: it assumes linearity in the data, while the readings are clearly non-linear.
 }
 
 
@@ -553,7 +561,7 @@ Your Answer Here
 
 
 \answerbox{4em}{
-Your Answer Here
+The training set has 8937 measurements, the validation set has 2234, and the testing set has 3724.
 }
 
 
@@ -565,7 +573,7 @@ Your Answer Here
 
 
 \answerbox{8em}{
-Your Answer Here
+I will use the SKLearn {\em DummyRegressor} as a baseline regressor, with the strategy set to “mean”: always predicts the mean of the set's $y$-values. RMSE on the training set is 79.71, while RMSE on the validation set is 80.21 (in this case they are also the std. devs. of the $y$-values for the training and validation sets). Given that the mean of the data is 98.32 (training) and 99.89 (validation), and that the 90th percentile is 197.25 (training) and 195.20 (validation), RMSE is very large.
 }
 
 
@@ -577,7 +585,7 @@ Your Answer Here
 
 
 \answerbox{7em}{
-Your Answer Here
+After training a Linear Regressor on the training data, RMSE on the training set is 39.83 and RMSE on the validation set is 41.13. Performance relative to the baseline regressor has more than doubled, with an improvement of 59.48\% on the training set and 58.82\% on the validation set.
 }
 
 
@@ -591,7 +599,7 @@ Your Answer Here
 
 
 \answerbox{10em}{
-Your Answer Here
+As the magnitudes of the coefficients express how much a unit-change in the independent variable (feature vector) affects the dependent variable (target), we know that they depend on both those variables. To compare the coefficients, we need to make sure that the features are on the same scale by normalising them. In the SKLearn implementation, normalisation is done by subtracting the mean and dividing by the l2-norm (square root of the sum of the squared vector values). This will \textbf {not} affect the performance of the Linear Regressor.
 }
 
 
@@ -603,7 +611,27 @@ Your Answer Here
 
 
 \answerbox{15em}{
-Your Answer Here
+
+\begin{minipage}{0.45\textwidth}
+	\begin{tabular}{rr}
+		Site ID (feature) &  \% Relative importance \\
+		\midrule 1 &   14.61 \\
+		2 &  1.26 \\
+		4 &  16.96 \\
+		6 &  0.86 \\
+		7 &  7.51 \\
+		10 & 10.09 \\
+		12 & 16.32 \\
+		14 & 11.95 \\
+		16 & 20.46 \\
+	\end{tabular}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.45\textwidth}
+	\begin{tabular}{|p{\textwidth}}
+		The most important site is site 16, and the least important site is site 6. This is in accordance with the correlation coefficients for Site 17 at Q 4(f), because we observe that the correlation between NOx measurements at site 17 and site 16 is highest (0.78), and correlation between site 17 and site 6 is lowest (0.58).
+	\end{tabular}
+\end{minipage}%
 }
 
 
@@ -615,7 +643,7 @@ Your Answer Here
 
 
 \answerbox{8em}{
-Your Answer Here
+The KNN regressor has a RMSE of 32.44 on the training set, and a RMSE of 40.31 on the validation set. This brings a slight improvement on the training set (18.55\%), but is insignificantly better on the validation set (1.99\%). A limitation of the KNN algorithm for our unnormalised dataset is that it is completely necessary that features have the same scale, since absolute differences in features weight the same, i.e., a given distance in feature 1 must mean the same for feature 2.
 }
 
 
@@ -627,7 +655,9 @@ Your Answer Here
 
 
 \answerbox{40em}{
-Your Image Here
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{knn_best_params}
+\end{center}
 }
 
 
@@ -639,7 +669,7 @@ Your Image Here
 
 
 \answerbox{6em}{
-Your Answer Here
+The best-case RMSE performance of the KNN regressor on the validation set is 38.90, for k=16.
 }
 
 
@@ -651,7 +681,9 @@ Your Answer Here
 
 
 \answerbox{40em}{
-Your Image Here
+\begin{center}
+	\includegraphics[width=0.9\textwidth]{dectree_best_params}
+\end{center}
 }
 
 
@@ -663,7 +695,7 @@ Your Image Here
 
 
 \answerbox{6em}{
-Your Answer Here
+The best-case RMSE performance on the validation set is 45.84, with k=8. From the plot we notice that as the depth of the tree increases, performance on the training set rapidly increases, but performance on the validation set decreases. This is because overfitting starts to take place (RMSE quickly approaches 0 on the training set).
 }
 
 
@@ -675,7 +707,15 @@ Your Answer Here
 
 
 \answerbox{6em}{
-Your Answer Here
+
+\begin{center}
+Testing-set performances (RMSE):
+\begin{tabular}{rrrr}
+	Baseline &   Linear Regressor &  KNN Regressor &  Decision Tree Regressor \\
+	\midrule
+	79.24 &  41.16 &           39.52 &            42.61 \\
+\end{tabular}
+\end{center}
 }
 
 
